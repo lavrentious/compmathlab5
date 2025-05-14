@@ -102,3 +102,23 @@ export function fExprToKatex(fExpr: string): string {
     .replace(/\(/g, "{")
     .replace(/\)/g, "}");
 }
+
+export function generateRange(
+  min: BigNumber,
+  max: BigNumber,
+  count: number,
+): BigNumber[] {
+  if (count <= 0) {
+    return [];
+  }
+  if (count == 1) {
+    return [min.add(max).div(2)];
+  }
+  const step = max.sub(min).div(count - 1);
+  const ans = [min];
+  for (let i = min.add(step); i < max; i = i.add(step)) {
+    ans.push(i);
+  }
+  ans.push(max);
+  return ans;
+}
