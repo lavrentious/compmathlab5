@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 import sympy as sp  # type: ignore
 
 from modules.interpolation.core.solvers.base_solver import BaseSolver
@@ -34,9 +32,8 @@ class LagrangeSolver(BaseSolver):
 
         f_expr: sp.Expr = sp.simplify(polynomial).expand()
 
-        f_lambdified = sp.lambdify(x, f_expr, "math")
+        sp.lambdify(x, f_expr, "math")
 
         return InterpolationResult(
-            f=lambda x_val: Decimal(f_lambdified(to_sp_float(x_val))),
-            f_expr=str(f_expr),
+            expr=f_expr,
         )

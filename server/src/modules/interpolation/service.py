@@ -32,7 +32,8 @@ class InterpolationService:
         res_data: InterpolationData | None = None
         if validation_res.success:
             res = solver.solve()
-            res_data = InterpolationData(f_expr=res.f_expr)
+            f_expr = str(res.expr)
+            res_data = InterpolationData(f_expr=f_expr)
         return InterpolationResponse(
             method=solver.interpolation_method,
             points=data.points,

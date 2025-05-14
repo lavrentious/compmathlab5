@@ -37,11 +37,10 @@ class NewtonDividedDifferencesSolver(BaseSolver):
 
         f_expr: sp.Expr = sp.simplify(polynomial).expand()
 
-        f_lambdified = sp.lambdify(x, f_expr, "math")
+        sp.lambdify(x, f_expr, "math")
 
         return InterpolationResult(
-            f=lambda x_val: Decimal(f_lambdified(to_sp_float(x_val))),
-            f_expr=str(f_expr),
+            expr=f_expr,
         )
 
     def _compute_divided_difference(self, indexes: List[int]) -> Decimal:

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from decimal import Decimal
 from enum import Enum
-from typing import Callable
+
+import sympy as sp  # type: ignore
 
 
 class InterpolationMethod(Enum):
@@ -12,8 +12,7 @@ class InterpolationMethod(Enum):
 
 @dataclass
 class InterpolationResult:
-    f: Callable[[Decimal], Decimal]
-    f_expr: str
+    expr: sp.Expr
 
 
 @dataclass
