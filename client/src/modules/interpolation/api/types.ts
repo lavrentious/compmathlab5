@@ -14,5 +14,5 @@ export type InterpolationResponse = {
   method: InterpolationMethod;
 } & (
   | { success: true; message: null; data: InterpolationData }
-  | { success: true; message: string | null; data: null }
+  | { success: false; message: string | null; data: null }
 );
