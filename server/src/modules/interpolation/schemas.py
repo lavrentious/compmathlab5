@@ -4,7 +4,10 @@ from typing import List, Union
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from config import FORMAT_STR
-from modules.interpolation.core.types import InterpolationMethod
+from modules.interpolation.core.types import (
+    InterpolationMethod,
+    PointInterpolationMethod,
+)
 
 
 class CustomBaseModel(BaseModel):
@@ -53,3 +56,31 @@ class InterpolationResponse(CustomBaseModel):
     success: bool
     message: str | None = None
     data: InterpolationData | None
+
+
+class PointInterpolationRequest(CustomBaseModel):
+    points: PointsList
+    method: PointInterpolationMethod
+    x_value: Decimal
+
+    @field_validator("x_value", mode="before")
+    @classmethod
+    def coerce_x_value_to_decimal(cls, value: str | float) -> Decimal:
+        try:
+            return Decimal(value)
+        except Exception:
+            raise ValueError("X value must be a float or string representing a float")
+
+
+class PointInterpolationData(CustomBaseModel):
+    f_expr: str
+    y_value: Decimal
+
+
+class PointInterpolationResponse(CustomBaseModel):
+    method: PointInterpolationMethod
+    points: PointsList
+    x_value: Decimal
+    success: bool
+    message: str | None = None
+    data: PointInterpolationData | None

@@ -16,7 +16,6 @@ class NewtonFiniteDifferencesSolver(BaseSolver):
     interpolation_method = InterpolationMethod.NEWTON_FINITE_DIFFERENCES
 
     def validate(self) -> InterpolationValidation:
-        # TODO: validate equal distance between xs
         hs = [self.xs[i + 1] - self.xs[i] for i in range(len(self.xs) - 1)]
         dhs = [abs(hs[i + 1] - hs[i]) for i in range(len(hs) - 1)]
         if max(dhs) > 1e-6:

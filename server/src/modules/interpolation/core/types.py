@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from decimal import Decimal
 from enum import Enum
 
 import sympy as sp  # type: ignore
@@ -10,9 +11,20 @@ class InterpolationMethod(Enum):
     NEWTON_FINITE_DIFFERENCES = "NEWTON_FINITE_DIFFERENCES"
 
 
+class PointInterpolationMethod(Enum):
+    STIRLING = "STIRLING"
+    BESSEL = "BESSEL"
+
+
 @dataclass
 class InterpolationResult:
     expr: sp.Expr
+
+
+@dataclass
+class PointInterpolationResult:
+    expr: sp.Expr
+    y_value: Decimal
 
 
 @dataclass

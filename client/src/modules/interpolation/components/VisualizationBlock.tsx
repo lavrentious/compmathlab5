@@ -7,7 +7,9 @@ import VisualizationPlot from "./VisualizationPlot";
 import VisualizationTable from "./VisualizationTable";
 
 const ApproximationVisualizationBlock = () => {
-  const result = useSelector((state: RootState) => state.simulation.result);
+  const { result, pointResult } = useSelector(
+    (state: RootState) => state.simulation,
+  );
 
   const downloadJson = useCallback(() => {
     const json = JSON.stringify(result, null, 2);
@@ -24,14 +26,14 @@ const ApproximationVisualizationBlock = () => {
     <Card>
       <Card.Header>Results</Card.Header>
       <Card.Body>
-        {result ? (
+        {result || pointResult ? (
           <>
-            <VisualizationPlot result={result} />
-            <VisualizationTable result={result} />
+            <VisualizationPlot result={result} pointResult={pointResult} />
           </>
         ) : (
           <p>No results yet</p>
         )}
+        {result && <VisualizationTable result={result} />}
       </Card.Body>
       {result && (
         <Card.Footer>

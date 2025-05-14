@@ -1,10 +1,13 @@
 import { Col, Container, Row } from "react-bootstrap";
-import ApproximationParamsBlock from "../components/ApproximationParamsBlock";
+
 import ApproximationVisualizationBlock from "../components/VisualizationBlock";
 
 import ImportModal from "../components/ImportModal";
+import InterpolationParamsBlock from "../components/InterpolationParamsBlock";
+import PointInterpolationParamsBlock from "../components/PointInterpolationParamsBlock";
 import PointsFormBlock from "../components/PointsFormBlock";
-import SubmitApproximationButton from "../components/SimulateButton";
+import PointSimulateButton from "../components/PointSimulateButton";
+import SimulateButton from "../components/SimulateButton";
 
 const MainPage = () => {
   return (
@@ -13,9 +16,14 @@ const MainPage = () => {
       <Row>
         <Col md={6} lg={4}>
           <PointsFormBlock />
-          <ApproximationParamsBlock />
           <hr />
-          <SubmitApproximationButton />
+          <h5>Interpolation</h5>
+          <InterpolationParamsBlock />
+          <SimulateButton />
+          <hr />
+          <h5>Point interpolation</h5>
+          <PointInterpolationParamsBlock />
+          <PointSimulateButton />
 
           <ImportModal />
         </Col>

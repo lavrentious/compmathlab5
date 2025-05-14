@@ -1,5 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { InteprolationRequest, InterpolationResponse } from "./types";
+import {
+  InteprolationRequest,
+  InterpolationResponse,
+  PointInteprolationRequest,
+  PointInterpolationResponse,
+} from "./types";
 import { xsYsToPoints } from "./utils";
 
 export const approximationApi = createApi({
@@ -20,14 +25,31 @@ export const approximationApi = createApi({
         },
       ) =>
         ({
+          ...response,
           points: xsYsToPoints(response.points.xs, response.points.ys),
-          data: response.data,
-          message: response.message,
-          method: response.method,
-          success: response.success,
         }) as InterpolationResponse,
+    }),
+    pointInterpolate: build.mutation<
+      PointInterpolationResponse,
+      PointInteprolationRequest
+    >({
+      query: (data) => ({
+        url: "/interpolation/point/",
+        method: "POST",
+        body: data,
+      }),
+      transformResponse: (
+        response: PointInterpolationResponse & {
+          points: { xs: string[]; ys: string[] };
+        },
+      ) =>
+        ({
+          ...response,
+          points: xsYsToPoints(response.points.xs, response.points.ys),
+        }) as PointInterpolationResponse,
     }),
   }),
 });
 
-export const { useInterpolateMutation } = approximationApi;
+export const { useInterpolateMutation, usePointInterpolateMutation } =
+  approximationApi;

@@ -1,14 +1,24 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { InterpolationResponse } from "src/modules/interpolation/api/types";
-import { InterpolationMethod, Point } from "src/modules/interpolation/types";
+import {
+  InterpolationResponse,
+  PointInterpolationResponse,
+} from "src/modules/interpolation/api/types";
+import {
+  InterpolationMethod,
+  Point,
+  PointInterpolationMethod,
+} from "src/modules/interpolation/types";
 
 interface SimulationState {
   params: {
     points: Point[];
-    method: InterpolationMethod;
+    method: InterpolationMethod; // method for interpolation
+    pointMethod: PointInterpolationMethod; // method for point interpolation
+    x_value: string;
   };
   sourceFExpr: string | null;
   result: InterpolationResponse | null;
+  pointResult: PointInterpolationResponse | null; // result for point interpolation
   importModalShown: boolean;
 }
 
@@ -16,9 +26,12 @@ const initialState: SimulationState = {
   params: {
     points: [],
     method: InterpolationMethod.LAGRANGE,
+    pointMethod: PointInterpolationMethod.STIRLING,
+    x_value: "",
   },
   sourceFExpr: null,
   result: null,
+  pointResult: null,
   importModalShown: false,
 };
 
@@ -50,6 +63,15 @@ const approximationSlice = createSlice({
     setSourceFExpr(state, action: PayloadAction<string | null>) {
       state.sourceFExpr = action.payload;
     },
+    setPointResult(state, action: PayloadAction<PointInterpolationResponse>) {
+      state.pointResult = action.payload;
+    },
+    setPointMethod(state, action: PayloadAction<PointInterpolationMethod>) {
+      state.params.pointMethod = action.payload;
+    },
+    setXValue(state, action: PayloadAction<string>) {
+      state.params.x_value = action.payload;
+    },
   },
 });
 
@@ -62,5 +84,8 @@ export const {
   setMethod,
   setImportModalShown,
   setSourceFExpr,
+  setPointMethod,
+  setPointResult,
+  setXValue,
 } = approximationSlice.actions;
 export default approximationSlice.reducer;
