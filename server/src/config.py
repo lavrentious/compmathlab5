@@ -1,0 +1,2 @@
+PRECISION = 32
+FORMAT_STR = f"{{:.{PRECISION}f}}"
