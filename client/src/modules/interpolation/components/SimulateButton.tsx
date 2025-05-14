@@ -4,6 +4,7 @@ import LoadingButton from "src/modules/common/components/LoadingButton";
 import { RootState, useAppDispatch } from "src/store";
 import { setResult } from "src/store/simulation.reducer";
 import { useApproximateMutation } from "../api/api";
+import { isStrictFloat } from "../utils/utils";
 
 const SimulateButton = () => {
   const { points, method } = useSelector(
@@ -27,6 +28,7 @@ const SimulateButton = () => {
   }, [fetch, points, dispatch, method]);
 
   const disabled = useMemo(() => {
+    if (points.some(point => !isStrictFloat(point.x) || !isStrictFloat(point.y))) return true;
     if (points.length < 2) return true;
     const allXsAreUnique =
       Array.from(new Set(points.map((point) => point.x))).length ===

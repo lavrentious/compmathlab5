@@ -7,6 +7,7 @@ interface SimulationState {
     points: Point[];
     method: InterpolationMethod;
   };
+  sourceFExpr: string | null;
   result: InterpolationResponse | null;
   importModalShown: boolean;
 }
@@ -16,6 +17,7 @@ const initialState: SimulationState = {
     points: [],
     method: InterpolationMethod.LAGRANGE,
   },
+  sourceFExpr: null,
   result: null,
   importModalShown: false,
 };
@@ -45,6 +47,9 @@ const approximationSlice = createSlice({
     setImportModalShown(state, action: PayloadAction<boolean>) {
       state.importModalShown = action.payload;
     },
+    setSourceFExpr(state, action: PayloadAction<string | null>) {
+      state.sourceFExpr = action.payload;
+    },
   },
 });
 
@@ -56,5 +61,6 @@ export const {
   setResult,
   setMethod,
   setImportModalShown,
+  setSourceFExpr,
 } = approximationSlice.actions;
 export default approximationSlice.reducer;

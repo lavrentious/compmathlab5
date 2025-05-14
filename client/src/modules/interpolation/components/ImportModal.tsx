@@ -5,6 +5,7 @@ import { RootState, useAppDispatch } from "src/store";
 import { setImportModalShown as setImportModalShownAction } from "src/store/simulation.reducer";
 import ImportJson from "./ImportJson";
 import ImportPreset from "./ImportPreset";
+import ImportSourceFExpr from "./ImportSourceFExpr";
 const ImportModal = () => {
   const shown = useSelector(
     (state: RootState) => state.simulation.importModalShown,
@@ -21,7 +22,9 @@ const ImportModal = () => {
     <Modal show={shown} onHide={() => setImportModalShown(false)}>
       <Modal.Header closeButton>Import</Modal.Header>
       <Modal.Body>
-        import from preset
+        <ImportSourceFExpr onSelect={() => setImportModalShown(false)} />
+        <hr />
+        or import from preset
         <ImportPreset onSelect={() => setImportModalShown(false)} />
         <hr />
         or import from json
