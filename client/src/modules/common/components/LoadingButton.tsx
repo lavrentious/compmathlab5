@@ -12,7 +12,7 @@ const LoadingButton: React.FC<LoadingButtonProps> = ({
   ...props
 }) => {
   return (
-    <Button disabled={isLoading} {...props}>
+    <Button {...props} disabled={isLoading || props.disabled}>
       <>
         {!!icon && !isLoading && icon}
         {isLoading && <Spinner animation="border" size="sm" />} {props.children}
