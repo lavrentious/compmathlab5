@@ -92,6 +92,9 @@ export function hydrateFExpr(
 
 export function fExprToKatex(fExpr: string): string {
   return fExpr
+    .replace(/([0-9.]+)e([+-]?[0-9]+)/gi, (_, base, exp) => {
+      return `${base}\\cdot 10^{${exp}}`;
+    })
     .replace(/\*\*/g, "^")
     .replace(/\^(\d{2,})/g, "^($1)")
     .replace(/\*/g, "\\cdot ")
