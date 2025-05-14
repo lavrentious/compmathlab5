@@ -83,11 +83,12 @@ const ImportSourceFExpr: React.FC<ImportSourceFExprProps> = ({ onSelect }) => {
 
   const generatePointsValid = useMemo(() => {
     return (
-      generatePointsEnabled &&
-      leftBound !== "" &&
-      rightBound !== "" &&
-      new Decimal(leftBound).lt(new Decimal(rightBound)) &&
-      generatedPointsCount > 0
+      !generatePointsEnabled ||
+      (generatePointsEnabled &&
+        leftBound !== "" &&
+        rightBound !== "" &&
+        new Decimal(leftBound).lt(new Decimal(rightBound)) &&
+        generatedPointsCount > 0)
     );
   }, [generatePointsEnabled, generatedPointsCount, leftBound, rightBound]);
 
