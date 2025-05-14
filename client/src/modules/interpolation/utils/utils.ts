@@ -56,6 +56,7 @@ export function hydrateFExpr(
 export function fExprToKatex(fExpr: string): string {
   return fExpr
     .replace(/\*\*/g, "^")
+    .replace(/\^(\d{2,})/g, "^($1)")
     .replace(/\*/g, "\\cdot ")
     .replace(/\+\s*-/g, "-")
     .replace(/\(/g, "{")
