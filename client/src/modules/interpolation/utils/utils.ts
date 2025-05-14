@@ -1,28 +1,65 @@
 import Decimal from "decimal.js";
+import { BigNumber, isFunctionNode, isSymbolNode, MathNode } from "mathjs";
 import { Point } from "../types";
+import { configuredMath } from "./mathjs";
 
+const allowedVariables = new Set(["x"]);
+const allowedConstants = new Set(["e", "pi"]);
+const knownFunctions = new Set(["log", "sin", "cos", "tan", "sqrt", "abs"]);
 export function fExprToFunction(
   fExpr: string,
-): (x: Decimal.Value) => Decimal.Value {
-  // FIXME
-  fExpr = fExpr
-    .replace(/\^/g, "**")
-    .replace(/ln\(/g, "Math.log(")
-    .replace(/e/g, "Math.E");
-  return (_x: Decimal.Value) => {
-    const x = new Decimal(_x);
-    return new Function("x", `return ${fExpr}`)(x);
-  };
+): ((x: BigNumber) => BigNumber) | null {
+  try {
+    fExpr = fExpr
+      .replace(/\*\*/g, "^")
+      .replace(/\bln\(/g, "log(")
+      .replace(/\be\b/g, "e");
+
+    const node = configuredMath.parse(fExpr);
+
+    // Collect symbols used as variables
+    const invalidSymbols = new Set<string>();
+
+    node.traverse((n: MathNode, _, parent) => {
+      if (isSymbolNode(n)) {
+        const name = n.name;
+
+        // If it's a function, ensure it's being *called* (i.e., parent is FunctionNode)
+        const isFunction = knownFunctions.has(name);
+        const isProperCall = isFunctionNode(parent) && parent.fn.name === name;
+
+        if (
+          !allowedVariables.has(name) &&
+          !allowedConstants.has(name) &&
+          !(isFunction && isProperCall)
+        ) {
+          invalidSymbols.add(name);
+        }
+      }
+    });
+
+    if (invalidSymbols.size > 0) {
+      // console.error(`Disallowed symbol(s): ${Array.from(invalidSymbols).join(", ")}`);
+      return null;
+    }
+
+    return (x: BigNumber) => {
+      return node.evaluate({ x });
+    };
+  } catch {
+    // console.error("Invalid math expression:", fExpr, err);
+    return null;
+  }
 }
 
 export function generatePoints(
-  fn: (x: Decimal.Value) => Decimal.Value,
+  fn: (x: BigNumber) => BigNumber,
   points: Point[],
-): { xs: Decimal.Value[]; ys: Decimal.Value[] } {
+): { xs: BigNumber[]; ys: BigNumber[] } {
   const xMin = Math.min(...points.map((p) => +p.x));
   const xMax = Math.max(...points.map((p) => +p.x));
-  const xs: Decimal.Value[] = [];
-  const ys: Decimal.Value[] = [];
+  const xs: Decimal[] = [];
+  const ys: Decimal[] = [];
   for (let i = 0; i <= 100; i++) {
     const x = new Decimal(xMin + (i / 100) * (xMax - xMin));
     xs.push(x);
