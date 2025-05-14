@@ -1,7 +1,7 @@
 import "katex/dist/katex.min.css";
 import React from "react";
 import { Badge, Table } from "react-bootstrap";
-import { BlockMath } from "react-katex";
+import { InlineMath } from "react-katex";
 
 import { InterpolationResponse } from "../api/types";
 import { fExprToKatex } from "../utils/utils";
@@ -35,7 +35,7 @@ const VisualizationTable: React.FC<VisualizationTableProps> = ({ result }) => {
             <tr>
               <th>Function</th>
               <td>
-                <BlockMath math={fExprToKatex(result.data.f_expr)} />
+                <InlineMath math={fExprToKatex(result.data.f_expr)} />
               </td>
             </tr>
           </>
