@@ -8,7 +8,7 @@ export const approximationApi = createApi({
     baseUrl: (import.meta.env.VITE_API_BASE_URL ?? "") + "/api",
   }),
   endpoints: (build) => ({
-    approximate: build.mutation<InterpolationResponse, InteprolationRequest>({
+    interpolate: build.mutation<InterpolationResponse, InteprolationRequest>({
       query: (data) => ({
         url: "/interpolation/",
         method: "POST",
@@ -30,4 +30,4 @@ export const approximationApi = createApi({
   }),
 });
 
-export const { useApproximateMutation } = approximationApi;
+export const { useInterpolateMutation } = approximationApi;
