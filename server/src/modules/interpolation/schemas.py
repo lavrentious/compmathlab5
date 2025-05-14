@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import List, Union
 
-from pydantic import BaseModel, ConfigDict, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from config import FORMAT_STR
 from modules.interpolation.core.types import InterpolationMethod
@@ -12,8 +12,8 @@ class CustomBaseModel(BaseModel):
 
 
 class PointsList(CustomBaseModel):
-    xs: List[Decimal]
-    ys: List[Decimal]
+    xs: List[Decimal] = Field(min_length=2)
+    ys: List[Decimal] = Field(min_length=2)
 
     @model_validator(mode="after")
     def length_match(self) -> "PointsList":

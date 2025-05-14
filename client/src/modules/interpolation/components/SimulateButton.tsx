@@ -27,6 +27,7 @@ const SimulateButton = () => {
   }, [fetch, points, dispatch, method]);
 
   const disabled = useMemo(() => {
+    if (points.length < 2) return true;
     const allXsAreUnique =
       Array.from(new Set(points.map((point) => point.x))).length ===
       points.length;
