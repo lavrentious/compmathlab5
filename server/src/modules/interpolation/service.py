@@ -2,6 +2,7 @@ import time
 
 from modules.interpolation.core.solvers.base_point_solver import BasePointSolver
 from modules.interpolation.core.solvers.base_solver import BaseSolver
+from modules.interpolation.core.solvers.bessel_point_solver import BesselSolver
 from modules.interpolation.core.solvers.lagrange_solver import LagrangeSolver
 from modules.interpolation.core.solvers.newton_dd_solver import (
     NewtonDividedDifferencesSolver,
@@ -61,6 +62,8 @@ class InterpolationService:
 
         if data.method == PointInterpolationMethod.STIRLING:
             solver = StirlingSolver(data.points.xs, data.points.ys, data.x_value)
+        elif data.method == PointInterpolationMethod.BESSEL:
+            solver = BesselSolver(data.points.xs, data.points.ys, data.x_value)
 
         if not solver:
             raise Exception("Invalid interpolation method")
