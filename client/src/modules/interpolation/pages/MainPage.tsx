@@ -1,5 +1,6 @@
-import { Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row, Tab, Tabs } from "react-bootstrap";
 
+import FiniteDifferencesBlock from "../components/FiniteDifferencesBlock";
 import ImportModal from "../components/ImportModal";
 import InterpolationParamsBlock from "../components/InterpolationParamsBlock";
 import PointInterpolationParamsBlock from "../components/PointInterpolationParamsBlock";
@@ -27,7 +28,14 @@ const MainPage = () => {
           <ImportModal />
         </Col>
         <Col md={6} lg={8}>
-          <InterpolationVisualizationBlock />
+          <Tabs defaultActiveKey="results">
+            <Tab eventKey="results" title="Results">
+              <InterpolationVisualizationBlock />
+            </Tab>
+            <Tab eventKey="fd" title="Finite differences">
+              <FiniteDifferencesBlock />
+            </Tab>
+          </Tabs>
         </Col>
       </Row>
     </Container>
