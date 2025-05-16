@@ -33,7 +33,7 @@ const ApproximationVisualizationBlock = () => {
         ) : (
           <p>No results yet</p>
         )}
-        {result && <VisualizationTable result={result} />}
+        {result && <VisualizationTable result={result} pointResult={pointResult}/>}
       </Card.Body>
       {result && (
         <Card.Footer>

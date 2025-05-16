@@ -12,6 +12,7 @@ export type InterpolationData = {
 export type InterpolationResponse = {
   points: Point[];
   method: InterpolationMethod;
+  time_ms: number;
 } & (
   | { success: true; message: null; data: InterpolationData }
   | { success: false; message: string | null; data: null }
@@ -31,6 +32,7 @@ export type PointInterpolationData = {
 export type PointInterpolationResponse = {
   points: Point[];
   method: PointInterpolationMethod;
+  time_ms: number;
   x_value: string;
 } & (
   | { success: true; message: null; data: PointInterpolationData }

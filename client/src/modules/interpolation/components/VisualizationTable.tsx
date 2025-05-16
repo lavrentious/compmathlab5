@@ -3,15 +3,22 @@ import React from "react";
 import { Badge, Table } from "react-bootstrap";
 import { InlineMath } from "react-katex";
 
-import { InterpolationResponse } from "../api/types";
+import {
+  InterpolationResponse,
+  PointInterpolationResponse,
+} from "../api/types";
 import { fExprToKatex } from "../utils/utils";
 
 interface VisualizationTableProps {
   result: InterpolationResponse;
+  pointResult?: PointInterpolationResponse | null;
   precision?: number;
 }
 
-const VisualizationTable: React.FC<VisualizationTableProps> = ({ result }) => {
+const VisualizationTable: React.FC<VisualizationTableProps> = ({
+  result,
+  pointResult,
+}) => {
   return (
     <Table bordered hover responsive className="mb-0">
       <tbody>
@@ -29,6 +36,16 @@ const VisualizationTable: React.FC<VisualizationTableProps> = ({ result }) => {
           <th>Used Method</th>
           <td>{result.method}</td>
         </tr>
+        <tr>
+          <th>calculation time</th>
+          <td>{result.time_ms.toFixed(3)} ms</td>
+        </tr>
+        {pointResult && (
+          <tr>
+            <th>point calculation time</th>
+            <td>{pointResult.time_ms.toFixed(3)} ms</td>
+          </tr>
+        )}
 
         {result.data && (
           <>

@@ -56,6 +56,7 @@ class InterpolationResponse(CustomBaseModel):
     success: bool
     message: str | None = None
     data: InterpolationData | None
+    time_ms: float
 
 
 class PointInterpolationRequest(CustomBaseModel):
@@ -84,3 +85,4 @@ class PointInterpolationResponse(CustomBaseModel):
     success: bool
     message: str | None = None
     data: PointInterpolationData | None
+    time_ms: float

@@ -1,3 +1,5 @@
+import time
+
 from modules.interpolation.core.solvers.base_point_solver import BasePointSolver
 from modules.interpolation.core.solvers.base_solver import BaseSolver
 from modules.interpolation.core.solvers.lagrange_solver import LagrangeSolver
@@ -36,6 +38,7 @@ class InterpolationService:
         if not solver:
             raise Exception("Invalid interpolation method")
 
+        start_time = time.perf_counter()
         validation_res = solver.validate()
         res_data: InterpolationData | None = None
         if validation_res.success:
@@ -48,6 +51,7 @@ class InterpolationService:
             success=validation_res.success,
             message=validation_res.message,
             data=res_data,
+            time_ms=(time.perf_counter() - start_time) * 1000,
         )
 
     async def point_interpolate(
@@ -61,6 +65,7 @@ class InterpolationService:
         if not solver:
             raise Exception("Invalid interpolation method")
 
+        start_time = time.perf_counter()
         validation_res = solver.validate()
         res_data: PointInterpolationData | None = None
         if validation_res.success:
@@ -75,4 +80,5 @@ class InterpolationService:
             success=validation_res.success,
             message=validation_res.message,
             data=res_data,
+            time_ms=(time.perf_counter() - start_time) * 1000,
         )
