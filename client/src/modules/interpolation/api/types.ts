@@ -22,11 +22,13 @@ export type PointInteprolationRequest = {
   method: PointInterpolationMethod;
   points: { xs: string[]; ys: string[] };
   x_value: string;
+  m: number;
 };
 
 export type PointInterpolationData = {
   f_expr: string;
   y_value: string;
+  subset_xs: string[];
 };
 
 export type PointInterpolationResponse = {
@@ -34,6 +36,7 @@ export type PointInterpolationResponse = {
   method: PointInterpolationMethod;
   time_ms: number;
   x_value: string;
+  m: string;
 } & (
   | { success: true; message: null; data: PointInterpolationData }
   | { success: false; message: string | null; data: null }

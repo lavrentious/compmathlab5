@@ -11,6 +11,7 @@ const PointSimulateButton = () => {
     points,
     pointMethod: method,
     x_value,
+    m,
   } = useSelector((state: RootState) => state.simulation.params);
   const dispatch = useAppDispatch();
   const [fetch, { isLoading }] = usePointInterpolateMutation();
@@ -23,12 +24,13 @@ const PointSimulateButton = () => {
       },
       x_value: x_value,
       method,
+      m,
     })
       .unwrap()
       .then((data) => {
         dispatch(setPointResult(data));
       });
-  }, [fetch, points, x_value, method, dispatch]);
+  }, [fetch, points, x_value, method, dispatch, m]);
 
   const disabled = useMemo(() => {
     if (

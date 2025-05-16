@@ -14,7 +14,8 @@ interface SimulationState {
     points: Point[];
     method: InterpolationMethod; // method for interpolation
     pointMethod: PointInterpolationMethod; // method for point interpolation
-    x_value: string;
+    x_value: string; // value for point interpolation
+    m: number; // m parameter for point interpolation
   };
   sourceFExpr: string | null;
   result: InterpolationResponse | null;
@@ -28,6 +29,7 @@ const initialState: SimulationState = {
     method: InterpolationMethod.LAGRANGE,
     pointMethod: PointInterpolationMethod.STIRLING,
     x_value: "",
+    m: 2,
   },
   sourceFExpr: null,
   result: null,
@@ -72,6 +74,9 @@ const approximationSlice = createSlice({
     setXValue(state, action: PayloadAction<string>) {
       state.params.x_value = action.payload;
     },
+    setM(state, action: PayloadAction<number>) {
+      state.params.m = action.payload;
+    },
   },
 });
 
@@ -87,5 +92,6 @@ export const {
   setPointMethod,
   setPointResult,
   setXValue,
+  setM,
 } = approximationSlice.actions;
 export default approximationSlice.reducer;

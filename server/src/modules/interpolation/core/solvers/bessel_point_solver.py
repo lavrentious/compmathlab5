@@ -17,7 +17,6 @@ from modules.interpolation.core.utils import to_sp_float
 class BesselSolver(BasePointSolver):
     point_interpolation_method = PointInterpolationMethod.BESSEL
     _offset: int
-    m: int = 2  # TODO: pass with request
     subset_xs: List[Decimal]
     subset_ys: List[Decimal]
 
@@ -26,8 +25,9 @@ class BesselSolver(BasePointSolver):
         x: List[float | Decimal] | List[Decimal],
         y: List[float | Decimal] | List[Decimal],
         x_value: Decimal,
+        m: int,
     ):
-        super().__init__(x, y, x_value)
+        super().__init__(x, y, x_value, m)
         self.subset_xs, self.subset_ys = self._select_nearest_subset()
         self._offset = len(self.subset_xs) // 2 - 1
 
@@ -58,7 +58,8 @@ class BesselSolver(BasePointSolver):
             )
 
         x0, x1 = self._get_x(0), self._get_x(1)
-        if not (x0 <= self.x_value <= x1):
+        print("subset", self.subset_xs)
+        if not (x0 <= to_sp_float(self.x_value) <= x1):
             return InterpolationValidation(
                 success=False,
                 message=f"x_value={self.x_value} must lie between central nodes x0={x0} and x1={x1}",
@@ -69,7 +70,7 @@ class BesselSolver(BasePointSolver):
             for i in range(len(self.subset_xs) - 1)
         ]
         dhs = [abs(hs[i + 1] - hs[i]) for i in range(len(hs) - 1)]
-        if max(dhs) > float("1e-6"):
+        if len(dhs) and max(dhs) > float("1e-6"):
             return InterpolationValidation(
                 success=False, message="xs in subset are not evenly distributed"
             )
@@ -110,6 +111,7 @@ class BesselSolver(BasePointSolver):
         return PointInterpolationResult(
             expr=sp.simplify(result_poly).expand(),
             y_value=Decimal(str(y_value)),
+            subset_xs=self.subset_xs,
         )
 
     def _get_x(self, index: int) -> sp.Float:

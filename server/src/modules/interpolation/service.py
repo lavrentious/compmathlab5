@@ -61,9 +61,11 @@ class InterpolationService:
         solver: BasePointSolver | None = None
 
         if data.method == PointInterpolationMethod.STIRLING:
-            solver = StirlingSolver(data.points.xs, data.points.ys, data.x_value)
+            solver = StirlingSolver(
+                data.points.xs, data.points.ys, data.x_value, data.m
+            )
         elif data.method == PointInterpolationMethod.BESSEL:
-            solver = BesselSolver(data.points.xs, data.points.ys, data.x_value)
+            solver = BesselSolver(data.points.xs, data.points.ys, data.x_value, data.m)
 
         if not solver:
             raise Exception("Invalid interpolation method")
@@ -74,7 +76,9 @@ class InterpolationService:
         if validation_res.success:
             res = solver.solve()
             f_expr = str(res.expr)
-            res_data = PointInterpolationData(f_expr=f_expr, y_value=res.y_value)
+            res_data = PointInterpolationData(
+                f_expr=f_expr, y_value=res.y_value, subset_xs=res.subset_xs
+            )
 
         return PointInterpolationResponse(
             method=solver.point_interpolation_method,
@@ -84,4 +88,5 @@ class InterpolationService:
             message=validation_res.message,
             data=res_data,
             time_ms=(time.perf_counter() - start_time) * 1000,
+            m=data.m,
         )

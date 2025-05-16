@@ -17,7 +17,6 @@ from modules.interpolation.core.utils import to_sp_float
 class StirlingSolver(BasePointSolver):
     point_interpolation_method = PointInterpolationMethod.STIRLING
     _offset: int
-    m: int = 2
     subset_xs: List[Decimal]
     subset_ys: List[Decimal]
 
@@ -26,8 +25,9 @@ class StirlingSolver(BasePointSolver):
         x: List[float | Decimal] | List[Decimal],
         y: List[float | Decimal] | List[Decimal],
         x_value: Decimal,
+        m: int,
     ):
-        super().__init__(x, y, x_value)
+        super().__init__(x, y, x_value, m)
         self.subset_xs, self.subset_ys = self._select_nearest_subset()
         self._offset = len(self.subset_xs) // 2
 
@@ -72,16 +72,6 @@ class StirlingSolver(BasePointSolver):
         return InterpolationValidation(success=True, message=None)
 
     def solve(self) -> PointInterpolationResult:
-        print("subset")
-        print(self.subset_xs)
-        print(self.subset_ys)
-
-        print("x-2", self._get_x(-2))
-        print("x-1", self._get_x(-1))
-        print("x0", self._get_x(0))
-        print("x1", self._get_x(1))
-        print("x2", self._get_x(2))
-
         x = sp.Symbol("x")
         j = sp.Symbol("j")
 
@@ -109,7 +99,9 @@ class StirlingSolver(BasePointSolver):
         y_value = sp.lambdify(x, result_poly, "math")(to_sp_float(self.x_value))
 
         return PointInterpolationResult(
-            expr=sp.simplify(result_poly).expand(), y_value=Decimal(str(y_value))
+            expr=sp.simplify(result_poly).expand(),
+            y_value=Decimal(str(y_value)),
+            subset_xs=self.subset_xs,
         )
 
     def _get_x(self, index: int) -> sp.Float:

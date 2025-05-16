@@ -63,6 +63,7 @@ class PointInterpolationRequest(CustomBaseModel):
     points: PointsList
     method: PointInterpolationMethod
     x_value: Decimal
+    m: int = Field(gt=0)  # half-size for points subset
 
     @field_validator("x_value", mode="before")
     @classmethod
@@ -76,12 +77,14 @@ class PointInterpolationRequest(CustomBaseModel):
 class PointInterpolationData(CustomBaseModel):
     f_expr: str
     y_value: Decimal
+    subset_xs: List[Decimal]
 
 
 class PointInterpolationResponse(CustomBaseModel):
     method: PointInterpolationMethod
     points: PointsList
     x_value: Decimal
+    m: int
     success: bool
     message: str | None = None
     data: PointInterpolationData | None

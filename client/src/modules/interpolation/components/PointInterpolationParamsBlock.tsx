@@ -1,13 +1,13 @@
 import { Card, Form } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "src/store";
-import { setPointMethod, setXValue } from "src/store/simulation.reducer";
+import { setM, setPointMethod, setXValue } from "src/store/simulation.reducer";
 import { PointInterpolationMethod } from "../types";
 import FloatInput from "./FloatInput";
 
 const PointInterpolationParamsBlock = () => {
   const dispatch = useAppDispatch();
-  const { pointMethod, x_value } = useSelector(
+  const { pointMethod, x_value, m } = useSelector(
     (state: RootState) => state.simulation.params,
   );
 
@@ -40,6 +40,15 @@ const PointInterpolationParamsBlock = () => {
             <FloatInput
               value={x_value}
               setValue={(value) => dispatch(setXValue(value))}
+            />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>m (half-size for subset)</Form.Label>
+            <Form.Control
+              type="number"
+              inputMode="numeric"
+              value={m}
+              onChange={(e) => dispatch(setM(+e.target.value))}
             />
           </Form.Group>
         </Form>

@@ -38,6 +38,10 @@ const PointVisualizationTable: React.FC<PointVisualizationTableProps> = ({
               <td>{pointResult.x_value}</td>
             </tr>
             <tr>
+              <th>m (subset half-size)</th>
+              <td>{pointResult.m}</td>
+            </tr>
+            <tr>
               <th>y value</th>
               <td>{pointResult.data.y_value}</td>
             </tr>
@@ -46,6 +50,14 @@ const PointVisualizationTable: React.FC<PointVisualizationTableProps> = ({
               <td>
                 <InlineMath math={fExprToKatex(pointResult.data.f_expr)} />
               </td>
+            </tr>
+            <tr>
+              <th>Subset xs</th>
+              <ul className="mb-0 ps-3">
+                {pointResult.data.subset_xs.map((x, i) => (
+                  <li key={i}>{x}</li>
+                ))}
+              </ul>
             </tr>
           </>
         )}
