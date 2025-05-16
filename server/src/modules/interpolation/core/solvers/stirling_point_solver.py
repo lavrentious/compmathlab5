@@ -53,8 +53,7 @@ class StirlingSolver(BasePointSolver):
             cur = u / factorial(2 * i - 1)
             cur *= p
             cur *= (
-                self._get_diff(2 * i - 1, -(i - 1))
-                + self._get_diff(2 * i - 1, -i)
+                self._get_diff(2 * i - 1, -(i - 1)) + self._get_diff(2 * i - 1, -i)
             ) / 2
             result_poly += cur
 

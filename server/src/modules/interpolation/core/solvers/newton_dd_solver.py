@@ -44,8 +44,8 @@ class NewtonDividedDifferencesSolver(BaseSolver):
         )
 
     def _compute_divided_difference(self, indexes: List[int]) -> Decimal:
-        order = len(indexes)
-        if order == 1:
+        order = len(indexes) - 1
+        if order == 0:
             return self.ys[indexes[0]]
         return (
             self._compute_divided_difference(indexes[1:])
