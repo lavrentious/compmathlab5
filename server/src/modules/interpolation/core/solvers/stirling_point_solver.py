@@ -62,9 +62,7 @@ class StirlingSolver(BasePointSolver):
             cur *= self._get_diff(2 * i, -i)
             result_poly += cur
 
-        print("poly", result_poly)
         y_value = sp.lambdify(x, result_poly, "math")(to_sp_float(self.x_value))
-        print("y_value", y_value)
 
         return PointInterpolationResult(
             expr=sp.simplify(result_poly).expand(), y_value=Decimal(str(y_value))

@@ -32,8 +32,6 @@ class LagrangeSolver(BaseSolver):
 
         f_expr: sp.Expr = sp.simplify(polynomial).expand()
 
-        sp.lambdify(x, f_expr, "math")
-
         return InterpolationResult(
             expr=f_expr,
         )

@@ -1,5 +1,5 @@
 from decimal import Decimal
-from typing import List
+from functools import lru_cache
 
 import sympy as sp  # type: ignore
 
@@ -22,32 +22,22 @@ class NewtonDividedDifferencesSolver(BaseSolver):
         x = sp.Symbol("x")
         n = len(self.xs)
 
-        # divided differences
-        coefficients = [
-            self._compute_divided_difference(list(range(i + 1))) for i in range(n)
-        ]
-
-        polynomial: sp.Expr = 0
-        product_term: sp.Expr = 1
-        for i in range(n):
-            coeff = to_sp_float(coefficients[i])
-            if i > 0:
-                product_term *= x - to_sp_float(self.xs[i - 1])
-            polynomial += coeff * product_term if i > 0 else coeff
+        polynomial: sp.Expr = self._compute_dd(0, 0)
+        xs_prod = 1
+        for k in range(1, n):
+            xs_prod *= x - to_sp_float(self.xs[k - 1])
+            polynomial += to_sp_float(self._compute_dd(0, k)) * xs_prod
 
         f_expr: sp.Expr = sp.simplify(polynomial).expand()
-
-        sp.lambdify(x, f_expr, "math")
 
         return InterpolationResult(
             expr=f_expr,
         )
 
-    def _compute_divided_difference(self, indexes: List[int]) -> Decimal:
-        order = len(indexes) - 1
+    @lru_cache()
+    def _compute_dd(self, i: int, order: int) -> Decimal:
         if order == 0:
-            return self.ys[indexes[0]]
-        return (
-            self._compute_divided_difference(indexes[1:])
-            - self._compute_divided_difference(indexes[:-1])
-        ) / (self.xs[indexes[-1]] - self.xs[indexes[0]])
+            return self.ys[i]
+        num = self._compute_dd(i + 1, order - 1) - self._compute_dd(i, order - 1)
+        denom = self.xs[i + order] - self.xs[i]
+        return Decimal(num / denom)
