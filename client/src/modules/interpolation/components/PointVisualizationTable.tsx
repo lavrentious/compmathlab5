@@ -3,22 +3,23 @@ import React from "react";
 import { Badge, Table } from "react-bootstrap";
 import { InlineMath } from "react-katex";
 
-import { InterpolationResponse } from "../api/types";
+import { PointInterpolationResponse } from "../api/types";
 import { fExprToKatex } from "../utils/utils";
 
-interface VisualizationTableProps {
-  result: InterpolationResponse;
-  precision?: number;
+interface PointVisualizationTableProps {
+  pointResult: PointInterpolationResponse;
 }
 
-const VisualizationTable: React.FC<VisualizationTableProps> = ({ result }) => {
+const PointVisualizationTable: React.FC<PointVisualizationTableProps> = ({
+  pointResult,
+}) => {
   return (
     <Table bordered hover responsive className="mb-0">
       <tbody>
         <tr>
           <th>Status</th>
           <td>
-            {result.success ? (
+            {pointResult.success ? (
               <Badge bg="success">Success</Badge>
             ) : (
               <Badge bg="danger">Failed</Badge>
@@ -27,28 +28,28 @@ const VisualizationTable: React.FC<VisualizationTableProps> = ({ result }) => {
         </tr>
         <tr>
           <th>Used Method</th>
-          <td>{result.method}</td>
+          <td>{pointResult.method}</td>
         </tr>
         <tr>
           <th>calculation time</th>
-          <td>{result.time_ms.toFixed(3)} ms</td>
+          <td>{pointResult.time_ms.toFixed(3)} ms</td>
         </tr>
 
-        {result.data && (
+        {pointResult.success && (
           <>
             <tr>
               <th>Function</th>
               <td>
-                <InlineMath math={fExprToKatex(result.data.f_expr)} />
+                <InlineMath math={fExprToKatex(pointResult.data.f_expr)} />
               </td>
             </tr>
           </>
         )}
 
-        {result.message && (
+        {pointResult.message && (
           <tr>
             <th>Message</th>
-            <td>{result.message}</td>
+            <td>{pointResult.message}</td>
           </tr>
         )}
       </tbody>
@@ -56,4 +57,4 @@ const VisualizationTable: React.FC<VisualizationTableProps> = ({ result }) => {
   );
 };
 
-export default VisualizationTable;
+export default PointVisualizationTable;

@@ -3,6 +3,7 @@ import { Button, Card } from "react-bootstrap";
 import { BiExport } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import { RootState } from "src/store";
+import PointVisualizationTable from "./PointVisualizationTable";
 import VisualizationPlot from "./VisualizationPlot";
 import VisualizationTable from "./VisualizationTable";
 
@@ -33,7 +34,19 @@ const ApproximationVisualizationBlock = () => {
         ) : (
           <p>No results yet</p>
         )}
-        {result && <VisualizationTable result={result} pointResult={pointResult}/>}
+        {result && (
+          <>
+            <h5>Interpolation result</h5>
+            <VisualizationTable result={result} />
+          </>
+        )}
+        <hr />
+        {pointResult && (
+          <>
+            <h5>Point interpolation result</h5>
+            <PointVisualizationTable pointResult={pointResult} />
+          </>
+        )}
       </Card.Body>
       {result && (
         <Card.Footer>
