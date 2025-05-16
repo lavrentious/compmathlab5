@@ -30,13 +30,17 @@ const PointVisualizationTable: React.FC<PointVisualizationTableProps> = ({
           <th>Used Method</th>
           <td>{pointResult.method}</td>
         </tr>
-        <tr>
-          <th>calculation time</th>
-          <td>{pointResult.time_ms.toFixed(3)} ms</td>
-        </tr>
 
         {pointResult.success && (
           <>
+            <tr>
+              <th>x value</th>
+              <td>{pointResult.x_value}</td>
+            </tr>
+            <tr>
+              <th>y value</th>
+              <td>{pointResult.data.y_value}</td>
+            </tr>
             <tr>
               <th>Function</th>
               <td>
@@ -52,6 +56,11 @@ const PointVisualizationTable: React.FC<PointVisualizationTableProps> = ({
             <td>{pointResult.message}</td>
           </tr>
         )}
+
+        <tr>
+          <th>calculation time</th>
+          <td>{pointResult.time_ms.toFixed(3)} ms</td>
+        </tr>
       </tbody>
     </Table>
   );

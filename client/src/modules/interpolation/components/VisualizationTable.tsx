@@ -29,10 +29,6 @@ const VisualizationTable: React.FC<VisualizationTableProps> = ({ result }) => {
           <th>Used Method</th>
           <td>{result.method}</td>
         </tr>
-        <tr>
-          <th>calculation time</th>
-          <td>{result.time_ms.toFixed(3)} ms</td>
-        </tr>
 
         {result.data && (
           <>
@@ -51,6 +47,11 @@ const VisualizationTable: React.FC<VisualizationTableProps> = ({ result }) => {
             <td>{result.message}</td>
           </tr>
         )}
+
+        <tr>
+          <th>calculation time</th>
+          <td>{result.time_ms.toFixed(3)} ms</td>
+        </tr>
       </tbody>
     </Table>
   );
