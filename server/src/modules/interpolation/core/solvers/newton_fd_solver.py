@@ -33,7 +33,7 @@ class NewtonFiniteDifferencesSolver(BaseSolver):
         product_term: sp.Expr = 1
         for i in range(n):
             coeff = to_sp_float(
-                self._compute_finite_difference(0, i) / (factorial(i) * h**i)
+                self._compute_finite_difference(i, 0) / (factorial(i) * h**i)
             )
 
             if i > 0:
@@ -46,9 +46,11 @@ class NewtonFiniteDifferencesSolver(BaseSolver):
             expr=f_expr,
         )
 
-    def _compute_finite_difference(self, i: int, order: int) -> Decimal:
+    def _compute_finite_difference(self, order: int, i: int) -> Decimal:
+        if order < 0:
+            raise ValueError("Order must be non-negative")
         if order == 0:
             return self.ys[i]
-        a = self._compute_finite_difference(i + 1, order - 1)
-        b = self._compute_finite_difference(i, order - 1)
+        a = self._compute_finite_difference(order - 1, i + 1)
+        b = self._compute_finite_difference(order - 1, i)
         return a - b

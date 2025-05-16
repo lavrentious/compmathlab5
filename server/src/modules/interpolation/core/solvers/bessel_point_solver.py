@@ -27,21 +27,22 @@ class BesselSolver(BasePointSolver):
         self._offset = (self.n - 1) // 2
 
     def validate(self) -> InterpolationValidation:
-        if self.n % 2 == 1:
-            return InterpolationValidation(
-                success=False, message="Number of points must be even"
-            )
+        # FIXME: take even subset around x_value
+        # if self.n % 2 == 1:
+        #     return InterpolationValidation(
+        #         success=False, message="Number of points must be even"
+        #     )
 
-        if self.n < 6:
-            return InterpolationValidation(
-                success=False, message="Number of points must be at least 6"
-            )
-        
+        # if self.n < 6:
+        #     return InterpolationValidation(
+        #         success=False, message="Number of points must be at least 6"
+        #     )
+
         x0, x1 = self._get_x(0), self._get_x(1)
         if not (x0 <= self.x_value <= x1):
             return InterpolationValidation(
                 success=False,
-                message=f"x_value={self.x_value} must lie between central nodes x0={x0} and x1={x1}"
+                message=f"x_value={self.x_value} must lie between central nodes x0={x0} and x1={x1}",
             )
 
         hs = [self.xs[i + 1] - self.xs[i] for i in range(len(self.xs) - 1)]
@@ -61,15 +62,15 @@ class BesselSolver(BasePointSolver):
         n = 2
 
         result_poly: sp.Expr = (self._get_y(0) + self._get_y(1)) / 2
-        result_poly += (t - 1 / 2) * self._compute_offset_fd(0, 1)
+        result_poly += (t - 1 / 2) * self._compute_offset_fd(1, 0)
 
         ts: sp.Expr = t
         for i in range(1, n + 1):
             ts *= t - i
             cur = ts / factorial(2 * i)
             cur *= (
-                self._compute_offset_fd(-i, 2 * i)
-                + self._compute_offset_fd(-(i - 1), 2 * i)
+                self._compute_offset_fd(2 * i, -i)
+                + self._compute_offset_fd(2 * i, -(i - 1))
             ) / 2
 
             result_poly += cur
@@ -78,7 +79,7 @@ class BesselSolver(BasePointSolver):
                 ts
                 * (t - 1 / 2)
                 / factorial(2 * n + 1)
-                * self._compute_offset_fd(-i, 2 * i + 1)
+                * self._compute_offset_fd(2 * i + 1, -i)
             )
 
             ts *= t + i
@@ -101,12 +102,14 @@ class BesselSolver(BasePointSolver):
         """
         return to_sp_float(self.ys[self._offset + index])
 
-    def _compute_fd(self, i: int, order: int) -> Decimal:
+    def _compute_fd(self, order: int, i: int) -> Decimal:
+        if order < 0:
+            raise ValueError("Order must be non-negative")
         if order == 0:
             return self.ys[i]
-        a = self._compute_fd(i + 1, order - 1)
-        b = self._compute_fd(i, order - 1)
+        a = self._compute_fd(order - 1, i + 1)
+        b = self._compute_fd(order - 1, i)
         return a - b
 
-    def _compute_offset_fd(self, i: int, order: int) -> Decimal:
-        return self._compute_fd(i + self._offset, order)
+    def _compute_offset_fd(self, order: int, i: int) -> Decimal:
+        return self._compute_fd(order, i + self._offset)

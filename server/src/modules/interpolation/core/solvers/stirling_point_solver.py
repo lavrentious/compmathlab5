@@ -1,4 +1,5 @@
 from decimal import Decimal
+from functools import lru_cache
 from math import factorial
 from typing import List
 
@@ -15,18 +16,28 @@ from modules.interpolation.core.utils import to_sp_float
 
 class StirlingSolver(BasePointSolver):
     point_interpolation_method = PointInterpolationMethod.STIRLING
-    diff_table: List[List[Decimal]]
+    _offset: int
+
+    def __init__(
+        self,
+        x: List[float | Decimal] | List[Decimal],
+        y: List[float | Decimal] | List[Decimal],
+        x_value: Decimal,
+    ):
+        super().__init__(x, y, x_value)
+        self._offset = self.n // 2
 
     def validate(self) -> InterpolationValidation:
-        if self.n % 2 == 0:
-            return InterpolationValidation(
-                success=False, message="Number of points must be odd"
-            )
+        # FIXME: take odd subset around x_value
+        # if self.n % 2 == 0:
+        #     return InterpolationValidation(
+        #         success=False, message="Number of points must be odd"
+        #     )
 
-        if self.n < 5:
-            return InterpolationValidation(
-                success=False, message="Number of points must be at least 5"
-            )
+        # if self.n < 5:
+        #     return InterpolationValidation(
+        #         success=False, message="Number of points must be at least 5"
+        #     )
 
         hs = [self.xs[i + 1] - self.xs[i] for i in range(len(self.xs) - 1)]
         dhs = [abs(hs[i + 1] - hs[i]) for i in range(len(hs) - 1)]
@@ -37,29 +48,28 @@ class StirlingSolver(BasePointSolver):
         return InterpolationValidation(success=True, message=None)
 
     def solve(self) -> PointInterpolationResult:
-        self.diff_table = self._build_diff_table()
-
         x = sp.Symbol("x")
         j = sp.Symbol("j")
 
         h = self.xs[1] - self.xs[0]
-        u = (x - self._get_x(0)) / h
+        t = (x - self._get_x(0)) / h
         n = 2
 
         result_poly: sp.Expr = self._get_y(0)
         for i in range(1, n + 1):
-            p = sp.product(u**2 - j**2, (j, 1, i - 1))
+            p = sp.product(t**2 - j**2, (j, 1, i - 1))
 
-            cur = u / factorial(2 * i - 1)
+            cur = t / factorial(2 * i - 1)
             cur *= p
             cur *= (
-                self._get_diff(2 * i - 1, -(i - 1)) + self._get_diff(2 * i - 1, -i)
+                self._compute_offset_fd(2 * i - 1, -(i - 1))
+                + self._compute_offset_fd(2 * i - 1, -i)
             ) / 2
             result_poly += cur
 
-            cur = u**2 / factorial(2 * i)
+            cur = t**2 / factorial(2 * i)
             cur *= p
-            cur *= self._get_diff(2 * i, -i)
+            cur *= self._compute_offset_fd(2 * i, -i)
             result_poly += cur
 
         y_value = sp.lambdify(x, result_poly, "math")(to_sp_float(self.x_value))
@@ -72,31 +82,23 @@ class StirlingSolver(BasePointSolver):
         """
         return xi with offeset (i=0 - central point)
         """
-        return to_sp_float(self.xs[self.n // 2 + index])
+        return to_sp_float(self.xs[self._offset + index])
 
     def _get_y(self, index: int) -> sp.Float:
         """
         return yi with offeset (i=0 - central point)
         """
-        return to_sp_float(self.ys[self.n // 2 + index])
+        return to_sp_float(self.ys[self._offset + index])
 
-    def _get_diff(self, order: int, index: int) -> Decimal:
-        """
-        Возвращает конечную разность порядка `order`, смещенную на index относительно центра.
-        """
-        center = self.n // 2
-        i = center + index
-        if 0 <= i < len(self.ys) - order:
-            return self.diff_table[order][i]
-        return Decimal("0")
+    @lru_cache()
+    def _compute_fd(self, order: int, i: int) -> Decimal:
+        if order < 0:
+            raise ValueError("Order must be non-negative")
+        if order == 0:
+            return self.ys[i]
+        a = self._compute_fd(order - 1, i + 1)
+        b = self._compute_fd(order - 1, i)
+        return a - b
 
-    def _build_diff_table(self) -> list[list[Decimal]]:
-        """
-        Строит таблицу конечных разностей по ys.
-        """
-        table = [[y for y in self.ys]]
-        for i in range(1, self.n):
-            prev = table[-1]
-            current = [prev[j + 1] - prev[j] for j in range(len(prev) - 1)]
-            table.append(current)
-        return table
+    def _compute_offset_fd(self, order: int, i: int) -> Decimal:
+        return self._compute_fd(order, i + self._offset)
