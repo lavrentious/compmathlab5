@@ -1,5 +1,6 @@
 from decimal import Decimal
 from math import factorial
+from typing import List
 
 import sympy as sp  # type: ignore
 
@@ -16,6 +17,15 @@ class BesselSolver(BasePointSolver):
     point_interpolation_method = PointInterpolationMethod.BESSEL
     _offset: int  # index of left central x
 
+    def __init__(
+        self,
+        x: List[float | Decimal] | List[Decimal],
+        y: List[float | Decimal] | List[Decimal],
+        x_value: Decimal,
+    ):
+        super().__init__(x, y, x_value)
+        self._offset = (self.n - 1) // 2
+
     def validate(self) -> InterpolationValidation:
         if self.n % 2 == 1:
             return InterpolationValidation(
@@ -25,6 +35,13 @@ class BesselSolver(BasePointSolver):
         if self.n < 6:
             return InterpolationValidation(
                 success=False, message="Number of points must be at least 6"
+            )
+        
+        x0, x1 = self._get_x(0), self._get_x(1)
+        if not (x0 <= self.x_value <= x1):
+            return InterpolationValidation(
+                success=False,
+                message=f"x_value={self.x_value} must lie between central nodes x0={x0} and x1={x1}"
             )
 
         hs = [self.xs[i + 1] - self.xs[i] for i in range(len(self.xs) - 1)]
@@ -36,7 +53,6 @@ class BesselSolver(BasePointSolver):
         return InterpolationValidation(success=True, message=None)
 
     def solve(self) -> PointInterpolationResult:
-        self._offset = (self.n - 1) // 2
 
         x = sp.Symbol("x")
 
