@@ -7,8 +7,8 @@ import {
 } from "./types";
 import { xsYsToPoints } from "./utils";
 
-export const approximationApi = createApi({
-  reducerPath: "approximationApi",
+export const interpolationApi = createApi({
+  reducerPath: "interpolationApi",
   baseQuery: fetchBaseQuery({
     baseUrl: (import.meta.env.VITE_API_BASE_URL ?? "") + "/api",
   }),
@@ -52,4 +52,4 @@ export const approximationApi = createApi({
 });
 
 export const { useInterpolateMutation, usePointInterpolateMutation } =
-  approximationApi;
+  interpolationApi;

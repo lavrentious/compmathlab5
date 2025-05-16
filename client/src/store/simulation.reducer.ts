@@ -37,8 +37,8 @@ const initialState: SimulationState = {
   importModalShown: false,
 };
 
-const approximationSlice = createSlice({
-  name: "approximation",
+const interpolationSlice = createSlice({
+  name: "interpolation",
   initialState,
   reducers: {
     setPoints: (state, action: PayloadAction<Point[]>) => {
@@ -93,5 +93,5 @@ export const {
   setPointResult,
   setXValue,
   setM,
-} = approximationSlice.actions;
-export default approximationSlice.reducer;
+} = interpolationSlice.actions;
+export default interpolationSlice.reducer;

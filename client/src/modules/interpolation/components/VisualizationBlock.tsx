@@ -7,7 +7,7 @@ import PointVisualizationTable from "./PointVisualizationTable";
 import VisualizationPlot from "./VisualizationPlot";
 import VisualizationTable from "./VisualizationTable";
 
-const ApproximationVisualizationBlock = () => {
+const InterpolationVisualizationBlock = () => {
   const { result, pointResult } = useSelector(
     (state: RootState) => state.simulation,
   );
@@ -40,9 +40,9 @@ const ApproximationVisualizationBlock = () => {
             <VisualizationTable result={result} />
           </>
         )}
-        <hr />
         {pointResult && (
           <>
+            <hr />
             <h5>Point interpolation result</h5>
             <PointVisualizationTable pointResult={pointResult} />
           </>
@@ -59,4 +59,4 @@ const ApproximationVisualizationBlock = () => {
   );
 };
 
-export default ApproximationVisualizationBlock;
+export default InterpolationVisualizationBlock;
